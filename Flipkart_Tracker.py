@@ -7,9 +7,8 @@ from bs4 import BeautifulSoup
 import requests
 
 import smtplib
+import datetime
 import time
-from datetime import datetime
-
 
 link = ''
 derkprice = ''
@@ -20,8 +19,8 @@ user_price = 0.0
 UImail_Id = ''
 iterate_rate = 0
 
-#  https://www.flipkart.com/samsung-galaxy-s10-prism-white-128-gb/p/itmfdyp64j3hsfzy
-#  https://www.flipkart.com/mi-led-smart-tv-4x-108-cm-43/p/itmab87244d2fead
+# https://www.flipkart.com/samsung-galaxy-s10-prism-white-128-gb/p/itmfdyp64j3hsfzy
+# https://www.flipkart.com/mi-led-smart-tv-4x-108-cm-43/p/itmab87244d2fead
 # https://www.flipkart.com/nikon-d5600-dslr-camera-body-single-lens-af-p-dx-nikkor-18-55-mm-f-3-5-5-6g-vr-16-gb-sd-card/p/itmezvbdzefvjpfn
 # https://www.flipkart.com/jbl-t450bt-extra-bass-bluetooth-headset-mic/p/itmf3vhgqqtat2eh
 # https://www.flipkart.com/redmi-note-7-pro-space-black-64-gb/p/itmfegkx2gufuzhp
@@ -32,53 +31,62 @@ def popup():
 	print('Executing popup function')
 	global link
 	link = UIlink.get()
-	print('Getting link data')
-	source = requests.get(link).text
-	soup = BeautifulSoup(source, 'lxml')
-	print('Getting source data')
-	global derkprice
-	print('Getting Price:')
-	price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
-	print(price)
-	derkprice=str(price)
-	global title
-	print('Getting Title:')
-	title = soup.find('span', class_='_35KyD6').text
-	print(title)
-	Product_title = Label(frame3, text=f'Product: {title}', font=('normal',16,'bold'))
-	Product_title.pack(side=TOP,anchor=W, padx=10)
-	Product_price = Label(frame3,text = f'Current Price: {price}',font = ('normal',16,'bold'))
-	Product_price.pack(side=TOP,anchor=W, padx=10, pady=10)
-	user_info = Label(frame4, text='To Get Notified when the Price Drops ', font=('times',21,'italic'))
-	user_info.pack(pady=5, anchor=N)
-	Price_prompt = Label(frame4, text='Enter your desired price:', font=('verdana',12,'bold'))
-	Price_prompt.pack(side=LEFT, padx=10, pady=10)
-	global UIProd_link
-	UIProd_link = StringVar()      
-	Product_price = ttk.Entry(frame4,textvariable = UIProd_link,font = 14, width=30)
-	Product_price.pack(side=LEFT, fill=X, expand=True, padx=100, anchor=CENTER)
-	global UImail_Id
-	UImail_Id = StringVar()
-	notify = Label(frame5,text = 'Enter your Email Id:',font = ('verdana',12,'bold'))
-	notify.pack(side=LEFT, padx=10, anchor=NW)
-	User_mail_Id = ttk.Entry(frame5,textvariable = UImail_Id,font = 15, width=50)
-	User_mail_Id.pack(side=TOP, fill=X, expand=True, padx=100, anchor=CENTER)
-	Enter = ttk.Button(frame5,text = 'Notify ME!',command = price_compare)
-	Enter.pack(side=BOTTOM, padx=10, pady=15, anchor=CENTER)
-	print('Converting price[str to float]')
-	temp_price = price[1:8].replace(',','')
-	global comp_price
-	comp_price = float(temp_price)
-	print('Comp Price:' + str(comp_price))
-	global iterate_rate
-	iterate_rate = IntVar()
-	# iterate_rate.set(2)
-	opt1 = ttk.Radiobutton(frame6, text='Iterate 5/day',command=radio, variable=iterate_rate, value=1)
-	opt1.pack(side=TOP, padx=20, pady=10)
-	opt2 = ttk.Radiobutton(frame6, text='Iterate 3/minute(Demo)',command=radio, variable=iterate_rate, value=2)
-	opt2.pack(side=BOTTOM, padx=20, pady=10)
+	if 'flipkart' not in link.lower():
+		print('## Not Flipkart link ##')
+		tkinter.messagebox.showinfo('Invalid Link','Please Enter a Valid Link')
+	else:
+		try:
+			print('Getting link data')
+			source = requests.get(link).text
+			soup = BeautifulSoup(source, 'lxml')
+			print('Getting source data')
+			global derkprice
+			print('Getting Price:')
+			price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
+			print(price)
+			derkprice=str(price)
+			global title
+			print('Getting Title:')
+			title = soup.find('span', class_='_35KyD6').text
+			print(title)
+			Product_title = Label(frame3, text=f'Product: {title}', font=('normal',16,'bold'))
+			Product_title.pack(side=TOP,anchor=W, padx=10)
+			Product_price = Label(frame3,text = f'Current Price: {price}',font = ('normal',16,'bold'))
+			Product_price.pack(side=TOP,anchor=W, padx=10, pady=10)
+			user_info = Label(frame4, text='To Get Notified when the Price Drops ', font=('times',21,'italic'))
+			user_info.pack(pady=5, anchor=N)
+			Price_prompt = Label(frame4, text='Enter your desired price:', font=('verdana',12,'bold'))
+			Price_prompt.pack(side=LEFT, padx=10, pady=10)
+			global UIProd_link
+			UIProd_link = StringVar()      
+			Product_price = ttk.Entry(frame4,textvariable = UIProd_link,font = 14, width=30)
+			Product_price.pack(side=LEFT, fill=X, expand=True, padx=100, anchor=CENTER)
+			global UImail_Id
+			UImail_Id = StringVar()
+			notify = Label(frame5,text = 'Enter your Email Id:',font = ('verdana',12,'bold'))
+			notify.pack(side=LEFT, padx=10, anchor=NW)
+			User_mail_Id = ttk.Entry(frame5,textvariable = UImail_Id,font = 15, width=50)
+			User_mail_Id.pack(side=TOP, fill=X, expand=True, padx=100, anchor=CENTER)
+			Enter = ttk.Button(frame5,text = 'Notify ME!',command = price_compare)
+			Enter.pack(side=BOTTOM, padx=10, pady=15, anchor=CENTER)
+			print('Converting price[str to float]')
+			temp_price = price[1:8].replace(',','')
+			global comp_price
+			comp_price = float(temp_price)
+			print('Comp Price:' + str(comp_price))
+			global iterate_rate
+			iterate_rate = IntVar()
+			iterate_rate.set(1)		#Default set to 5 per day
+			opt1 = ttk.Radiobutton(frame6, text='Iterate 5/day',command=radio, variable=iterate_rate, value=1)
+			opt1.pack(side=TOP, padx=20, pady=10)
+			opt2 = ttk.Radiobutton(frame6, text='Iterate 3/minute(Demo)',command=radio, variable=iterate_rate, value=2)
+			opt2.pack(side=BOTTOM, padx=20, pady=10)
+		except:
+			print('Link parsing Error')
+			tkinter.messagebox.showinfo('Invalid Link','Please Enter a Valid Link')
+		  
 
-
+	
 def price_compare():
 	global UIProd_link
 	print('Getting User Price')
