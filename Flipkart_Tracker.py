@@ -25,27 +25,19 @@ iterate_rate = 0
 # https://www.flipkart.com/redmi-note-7-pro-space-black-64-gb/p/itmfegkx2gufuzhp
 
 def popup():
-	print('Executing popup function')
 	global link
 	link = UIlink.get()
 	if 'flipkart' not in link.lower():
-		print('## Not Flipkart link ##')
 		tkinter.messagebox.showwarning('Invalid Link','Please Enter a Valid Link')
 	else:
 		try:
-			print('Getting link data')
 			source = requests.get(link).text
 			soup = BeautifulSoup(source, 'lxml')
-			print('Getting source data')
 			global derkprice
-			print('Getting Price:')
 			price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
-			print(price)
 			derkprice=str(price)
 			global title
-			print('Getting Title:')
 			title = soup.find('span', class_='_35KyD6').text
-			print(title)
 			Product_title = Label(frame3, text=f'Product: {title}', font=('normal',16,'bold'))
 			Product_title.pack(side=TOP,anchor=W, padx=10)
 			Product_price = Label(frame3,text = f'Current Price: {price}',font = ('normal',16,'bold'))
@@ -66,11 +58,9 @@ def popup():
 			User_mail_Id.pack(side=TOP, fill=X, expand=True, padx=100, anchor=CENTER)
 			Enter = ttk.Button(frame5,text = 'Notify ME!',command = price_compare)
 			Enter.pack(side=BOTTOM, padx=10, pady=15, anchor=CENTER)
-			print('Converting price[str to float]')
 			temp_price = price[1:8].replace(',','')
 			global comp_price
 			comp_price = float(temp_price)
-			print('Comp Price:' + str(comp_price))
 			global iterate_rate
 			iterate_rate = IntVar()
 			iterate_rate.set(1)		#Default:1.Set to 5 per day 2.Demo 3 per minute
@@ -79,34 +69,24 @@ def popup():
 			opt2 = ttk.Radiobutton(frame6, text='Iterate 3/minute(Demo)',command=radio, variable=iterate_rate, value=2)
 			opt2.pack(side=BOTTOM, padx=20, pady=10)
 		except:
-			print('Link parsing Error')
 			tkinter.messagebox.showerror('Invalid Link','Please Enter a Valid Link')
 		  
 	
 def price_compare():
 	global UIProd_link
-	print('Getting User Price')
 	str_price = UIProd_link.get()
-	print('User Price:' + str_price)
 	global user_price
 	user_price = float(str_price.replace(',', ''))
-	print('Comparing User Price')
 	if(comp_price >= user_price):
-		print(f'{comp_price} >= {user_price}')
 		tkinter.messagebox.showinfo('Sh!t',f'You will be Notified when the price drops below ₹{str_price}')
 	else:
-		print(f'Calling mail function: {str(comp_price)} < {str(user_price)}')
 		mail()
 
 
 def mail():
 	global UImail_Id
-	print('Entering mail function')
 	mail_ID = UImail_Id.get()
-	print('Getting mailID')
-	print(mail_ID)
 	if '@' not in mail_ID:
-		print('Invalid Email_ID')
 		tkinter.messagebox.showerror('Invalid Mail_Id','Please Enter a valid Email_ID')
 	else:
 		server = smtplib.SMTP('smtp.gmail.com',587)
@@ -114,18 +94,14 @@ def mail():
 		server.starttls()
 		server.ehlo()
 		server.login('#email','#password')     #Enter Service Mail_Id and Password
-		print('Cooking Subject and Message')
 		subject ='Flipkart Price Tracker:Price Drop Alert'
 		body =(f'The Price of the product has dropped to INR - {derkprice[1:]}.You can buy it at:\n {link}')
 		msg =f"Subject:{subject}\n\n{body}"
-		print('Sending Email')
 		server.sendmail('#email', mail_ID ,msg)        #Enter Mail_Id again
 		tkinter.messagebox.showinfo('Congrats',"The Email has been sent!")
-		print("Email has been sent")
 		server.quit()
 
 def scrape():
-	print('Running Post-Scrape function', datetime.now())
 	source = requests.get(link).text
 	soup = BeautifulSoup(source, 'lxml')
 	price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
@@ -133,24 +109,19 @@ def scrape():
 	global comp_price
 	comp_price = float(temp_price)
 	if(comp_price >= user_price):
-		print(f'{str(comp_price)} >= {str(user_price)}', 'Product Not yet available')
+                tkinter.messagebox.showinfo('Info','Product Not yet available')
 	else:
-		print(f'Calling mail function: {str(comp_price)} < {str(user_price)}')
 		mail()
 
 
 def radio():
-	print('Executing Radio function')
 	conditn = iterate_rate.get()
-	print(conditn)
 	if(conditn == 1):
-		print('Option 5/day')
 		for i in range(0,5):
 			scrape()
 			time.sleep(60*60*24/5)
 
 	elif(conditn == 2):
-		print('Option 3/minute')
 		for i in range(0,3):
 			scrape()
 			time.sleep(20)
@@ -163,7 +134,7 @@ GUI.geometry("+160+80")
 GUI.get_themes()
 GUI.set_theme("scidblue")
 GUI.maxsize(1000,700)
-# GUI.iconbitmap('code.ico')
+# GUI.iconbitmap('code.ico')        #Include a Icon file for your program
 
 frame1 = Frame(GUI, relief=GROOVE, bd=10, bg='deepskyblue')
 frame1.pack(fill=X)
