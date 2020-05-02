@@ -19,6 +19,8 @@ user_price = 0.0
 UImail_Id = ''
 iterate_rate = 0
 
+#///Demo Links///
+
 # https://www.flipkart.com/samsung-galaxy-s10-prism-white-128-gb/p/itmfdyp64j3hsfzy
 # https://www.flipkart.com/mi-led-smart-tv-4x-108-cm-43/p/itmab87244d2fead
 # https://www.flipkart.com/jbl-t450bt-extra-bass-bluetooth-headset-mic/p/itmf3vhgqqtat2eh
@@ -38,21 +40,26 @@ def popup():
 			derkprice=str(price)
 			global title
 			title = soup.find('span', class_='_35KyD6').text
-			Product_title = Label(frame3, text=f'Product: {title}', font=('normal',16,'bold'))
+			Product_title = Label(frame3, text=f'Product: {title}'
+                         , font=('normal',16,'bold'))
 			Product_title.pack(side=TOP,anchor=W, padx=10)
-			Product_price = Label(frame3,text = f'Current Price: {price}',font = ('normal',16,'bold'))
+			Product_price = Label(frame3,text = f'Current Price: {price}'
+                         ,font = ('normal',16,'bold'))
 			Product_price.pack(side=TOP,anchor=W, padx=10, pady=10)
-			user_info = Label(frame4, text='To Get Notified when the Price Drops ', font=('times',21,'italic'))
+			user_info = Label(frame4, text='To Get Notified when the Price Drops '
+                     , font=('times',21,'italic'))
 			user_info.pack(pady=5, anchor=N)
-			Price_prompt = Label(frame4, text='Enter your desired price:', font=('verdana',12,'bold'))
+			Price_prompt = Label(frame4, text='Enter your desired price:'
+                        , font=('verdana',12,'bold'))
 			Price_prompt.pack(side=LEFT, padx=10, pady=10)
 			global UIProd_link
-			UIProd_link = StringVar()      
+			UIProd_link = StringVar()
 			Product_price = ttk.Entry(frame4,textvariable = UIProd_link,font = 14, width=30)
 			Product_price.pack(side=LEFT, fill=X, expand=True, padx=100, anchor=CENTER)
 			global UImail_Id
 			UImail_Id = StringVar()
-			notify = Label(frame5,text = 'Enter your Email Id:',font = ('verdana',12,'bold'))
+			notify = Label(frame5,text = 'Enter your Email Id:'
+                  ,font = ('verdana',12,'bold'))
 			notify.pack(side=LEFT, padx=10, anchor=NW)
 			User_mail_Id = ttk.Entry(frame5,textvariable = UImail_Id,font = 15, width=50)
 			User_mail_Id.pack(side=TOP, fill=X, expand=True, padx=100, anchor=CENTER)
@@ -64,30 +71,32 @@ def popup():
 			global iterate_rate
 			iterate_rate = IntVar()
 			iterate_rate.set(1)		#Default:1.Set to 5 per day 2.Demo 3 per minute
-			opt1 = ttk.Radiobutton(frame6, text='Iterate 5/day',command=radio, variable=iterate_rate, value=1)
+			opt1 = ttk.Radiobutton(frame6, text='Iterate 5/day'
+                          ,command=radio, variable=iterate_rate, value=1)
 			opt1.pack(side=TOP, padx=20, pady=10)
-			opt2 = ttk.Radiobutton(frame6, text='Iterate 3/minute(Demo)',command=radio, variable=iterate_rate, value=2)
+			opt2 = ttk.Radiobutton(frame6, text='Iterate 3/minute(Demo)'
+                          ,command=radio, variable=iterate_rate, value=2)
 			opt2.pack(side=BOTTOM, padx=20, pady=10)
 		except:
 			tkinter.messagebox.showerror('Invalid Link','Please Enter a Valid Link')
-		  
-	
+
 def price_compare():
 	global UIProd_link
 	str_price = UIProd_link.get()
 	global user_price
 	user_price = float(str_price.replace(',', ''))
 	if(comp_price >= user_price):
-		tkinter.messagebox.showinfo('Sh!t',f'You will be Notified when the price drops below ₹{str_price}')
+		tkinter.messagebox.showinfo('Sh!t'
+                              ,f'You will be Notified when the price drops below ₹{str_price}')
 	else:
 		mail()
-
 
 def mail():
 	global UImail_Id
 	mail_ID = UImail_Id.get()
 	if '@' not in mail_ID:
-		tkinter.messagebox.showerror('Invalid Mail_Id','Please Enter a valid Email_ID')
+		tkinter.messagebox.showerror('Invalid Mail_Id'
+                               ,'Please Enter a valid Email_ID')
 	else:
 		server = smtplib.SMTP('smtp.gmail.com',587)
 		server.ehlo()
@@ -95,7 +104,8 @@ def mail():
 		server.ehlo()
 		server.login('#email','#password')     #Enter Service Mail_Id and Password
 		subject ='Flipkart Price Tracker:Price Drop Alert'
-		body =(f'The Price of the product has dropped to INR - {derkprice[1:]}.You can buy it at:\n {link}')
+		body =(f'The Price of the product has dropped to INR - {derkprice[1:]}\
+         .You can buy it at:\n {link}')
 		msg =f"Subject:{subject}\n\n{body}"
 		server.sendmail('#email', mail_ID ,msg)        #Enter Mail_Id again
 		tkinter.messagebox.showinfo('Congrats',"The Email has been sent!")
@@ -113,7 +123,6 @@ def scrape():
 	else:
 		mail()
 
-
 def radio():
 	conditn = iterate_rate.get()
 	if(conditn == 1):
@@ -126,7 +135,6 @@ def radio():
 			scrape()
 			time.sleep(20)
 
- 
 #UI Elements
 GUI = tk.ThemedTk()
 GUI.title("Flipkart Product Price Tracker")
@@ -138,13 +146,14 @@ GUI.maxsize(1000,700)
 
 frame1 = Frame(GUI, relief=GROOVE, bd=10, bg='deepskyblue')
 frame1.pack(fill=X)
-Welcome_text = Label(frame1, text='Flipkart Product Price Tracker', font=('times',30,'underline')
-	                    , width=400, bg='steelblue', relief=RIDGE)
+Welcome_text = Label(frame1, text='Flipkart Product Price Tracker'
+    , font=('times',30,'underline'), width=400, bg='steelblue', relief=RIDGE)
 Welcome_text.pack(fill=X, side=TOP)
 
 frame2 = Frame(GUI)
 frame2.pack(fill=X, anchor=N, padx=5, pady=10)
-Link_Prompt = Label(frame2,text = 'Enter Product link:',font = ('verdana',12,'bold'))
+Link_Prompt = Label(frame2,text = 'Enter Product link:'
+                    ,font = ('verdana',12,'bold'))
 Link_Prompt.pack(side=LEFT, anchor=N,pady=4)
 UIlink = StringVar()
 Product_link = ttk.Entry(frame2, textvariable=UIlink, font=14)
