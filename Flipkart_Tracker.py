@@ -1,14 +1,10 @@
-from tkinter import *
-from tkinter import ttk
-from ttkthemes import themed_tk as tk
-import tkinter.messagebox
-
-from bs4 import BeautifulSoup
-import requests
-
-import smtplib
-import datetime
 import time
+import smtplib
+import requests
+from bs4 import BeautifulSoup
+import tkinter.messagebox
+from ttkthemes import themed_tk as tk
+from tkinter import ttk, Label, TOP, N, LEFT, StringVar, CENTER, BOTTOM, IntVar, Frame, X, W, NW, GROOVE, RIDGE
 
 
 # ///Demo Links///
@@ -20,65 +16,65 @@ import time
 
 def popup():
     global link
+    head = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36"
+    }
     link = UIlink.get()
-    if 'flipkart' not in link.lower():
-        tkinter.messagebox.showwarning(
-            'Invalid Link', 'Please Enter a Valid Link')
-    else:
-        try:
-            source = requests.get(link).text
-            soup = BeautifulSoup(source, 'lxml')
-            global derkprice
-            price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
-            derkprice = str(price)
-            global title
-            title = soup.find('span', class_='_35KyD6').text
-            Product_title = Label(
-                frame3, text=f'Product: {title}', font=('normal', 16, 'bold'))
-            Product_title.pack(side=TOP, anchor=W, padx=10)
-            Product_price = Label(
-                frame3, text=f'Current Price: {price}', font=('normal', 16, 'bold'))
-            Product_price.pack(side=TOP, anchor=W, padx=10, pady=10)
-            user_info = Label(frame4, text='To Get Notified when the Price Drops ', font=(
-                'times', 21, 'italic'))
-            user_info.pack(pady=5, anchor=N)
-            Price_prompt = Label(
-                frame4, text='Enter your desired price:', font=('verdana', 12, 'bold'))
-            Price_prompt.pack(side=LEFT, padx=10, pady=10)
-            global UIProd_link
-            UIProd_link = StringVar()
-            Product_price = ttk.Entry(
-                frame4, textvariable=UIProd_link, font=14, width=30)
-            Product_price.pack(side=LEFT, fill=X, expand=True,
-                               padx=100, anchor=CENTER)
-            global UImail_Id
-            UImail_Id = StringVar()
-            notify = Label(frame5, text='Enter your Email Id:',
-                           font=('verdana', 12, 'bold'))
-            notify.pack(side=LEFT, padx=10, anchor=NW)
-            User_mail_Id = ttk.Entry(
-                frame5, textvariable=UImail_Id, font=15, width=50)
-            User_mail_Id.pack(side=TOP, fill=X, expand=True,
-                              padx=100, anchor=CENTER)
-            Enter = ttk.Button(frame5, text='Notify ME!',
-                               command=price_compare)
-            Enter.pack(side=BOTTOM, padx=10, pady=15, anchor=CENTER)
-            temp_price = price[1:8].replace(',', '')
-            global comp_price
-            comp_price = float(temp_price)
-            global iterate_rate
-            iterate_rate = IntVar()
-            # Default:1.Set to 5 per day 2.Demo 3 per minute
-            iterate_rate.set(1)
-            opt1 = ttk.Radiobutton(
-                frame6, text='Iterate 5/day', command=radio, variable=iterate_rate, value=1)
-            opt1.pack(side=TOP, padx=20, pady=10)
-            opt2 = ttk.Radiobutton(
-                frame6, text='Iterate 3/minute(Demo)', command=radio, variable=iterate_rate, value=2)
-            opt2.pack(side=BOTTOM, padx=20, pady=10)
-        except:
-            tkinter.messagebox.showerror(
-                'Invalid Link', 'Please Enter a Valid Link')
+    source = requests.get(link, headers=head)
+    soup = BeautifulSoup(source.content, 'html.parser')
+    soup.encode('utf-8')
+    global derkprice
+    price = soup.find('div', class_='_1vC4OE _3qQ9m1').text
+    derkprice = str(price)
+    global title
+    title = soup.find('span', class_='_35KyD6').text
+    Product_title = Label(
+        frame3, text=f'Product: {title}', font=('normal', 16, 'bold'))
+    Product_title.pack(side=TOP, anchor=W, padx=10)
+    Product_price = Label(
+        frame3, text=f'Current Price: {price}',
+        font=('normal', 16, 'bold'))
+    Product_price.pack(side=TOP, anchor=W, padx=10, pady=10)
+    user_info = Label(frame4, text='To Get Notified when the Price Drops ', font=(
+        'times', 21, 'italic'))
+    user_info.pack(pady=5, anchor=N)
+    Price_prompt = Label(
+        frame4, text='Enter your desired price:',
+        font=('verdana', 12, 'bold'))
+    Price_prompt.pack(side=LEFT, padx=10, pady=10)
+    global UIProd_link
+    UIProd_link = StringVar()
+    Product_price = ttk.Entry(
+        frame4, textvariable=UIProd_link, font=14, width=30)
+    Product_price.pack(side=LEFT, fill=X, expand=True,
+                       padx=100, anchor=CENTER)
+    global UImail_Id
+    UImail_Id = StringVar()
+    notify = Label(frame5, text='Enter your Email Id:',
+                   font=('verdana', 12, 'bold'))
+    notify.pack(side=LEFT, padx=10, anchor=NW)
+    User_mail_Id = ttk.Entry(
+        frame5, textvariable=UImail_Id, font=15, width=50)
+    User_mail_Id.pack(side=TOP, fill=X, expand=True,
+                      padx=100, anchor=CENTER)
+    Enter = ttk.Button(frame5, text='Notify ME!',
+                       command=price_compare)
+    Enter.pack(side=BOTTOM, padx=10, pady=15, anchor=CENTER)
+    temp_price = price[1:8].replace(',', '')
+    global comp_price
+    comp_price = float(temp_price)
+    global iterate_rate
+    iterate_rate = IntVar()
+    # Default:1.Set to 5 per day 2.Demo 3 per minute
+    iterate_rate.set(1)
+    opt1 = ttk.Radiobutton(
+        frame6, text='Iterate 5/day', command=radio,
+        variable=iterate_rate, value=1)
+    opt1.pack(side=TOP, padx=20, pady=10)
+    opt2 = ttk.Radiobutton(
+        frame6, text='Iterate 3/minute(Demo)', command=radio,
+        variable=iterate_rate, value=2)
+    opt2.pack(side=BOTTOM, padx=20, pady=10)
 
 
 def price_compare():
@@ -150,7 +146,7 @@ GUI.get_themes()
 GUI.set_theme("scidblue")
 GUI.maxsize(1000, 700)
 
-#Add your Program Icon here
+# Add your Program Icon here
 # GUI.iconbitmap('code.ico')
 
 frame1 = Frame(GUI, relief=GROOVE, bd=10, bg='deepskyblue')
